@@ -153,8 +153,7 @@ public class ConsoleHistogram {
 	 * Input: the bin ranges as a double array, and the counts per bin as an int array
 	 * 
 	 * Output: a 2D string array containing ASCII "image" of the histogram, showing the bin ranges, 
-	 * x axis and titles, along with the actual counts within each bin. Also highlights the bin(s) of 
-	 * greatest frequency by displaying the bar as a column of |^| instead of |.|
+	 * x axis and titles, along with the actual counts within each bin
 	 */
 	public static String[][] makeStringHistogram (double[] bins, int[] counts) {
 		
