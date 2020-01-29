@@ -11,6 +11,7 @@ public class ConsoleHistogram {
 		int numBins = scan.nextInt(); // number of bins	
 		if (numBins <= 0) { // edge case check
 			scan.close();
+			System.out.println();
 			System.out.println("Error: Number of bins must be greater than zero.");
 			return;
 		}
