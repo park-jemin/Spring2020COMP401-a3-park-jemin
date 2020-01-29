@@ -163,7 +163,8 @@ public class ConsoleHistogram {
 			mode = Math.max(i, mode);
 		}		
 		
-		int x_axis = bins.length * 2,  y_axis = (mode <= 30) ? mode + 6 : 36; // allocates 6 spaces for titles, marks, spaces, the x axis, and counts
+		int x_axis = bins.length * 2;
+		int y_axis = (mode <= 30) ? mode + 6 : 36; // allocates 6 spaces for titles, marks, spaces, the x axis, and counts
 		int[] countsScaled = scaleCounts(counts, mode);
 		
 		String[][] graph = new String[x_axis][y_axis];
@@ -192,8 +193,7 @@ public class ConsoleHistogram {
 						break;
 						
 					} else if (stars > 1) {
-						graph[x][y] = "|^|"; // highlight mode (NOT NECESSARY)
-//						graph[x][y] = (counts[(x-2)/2] == mode) ? "|^|" : "|.|"; // highlight mode (NOT NECESSARY)
+						graph[x][y] = "|^|";
 						
 					} else if (stars == 1) {
 						graph[x][y] = "+-+"; 
@@ -202,7 +202,7 @@ public class ConsoleHistogram {
 						
 						graph[x][y] = "" + counts[(x-2)/2];
 						
-						for (int k = graph[x][y].length(); k < 3; k++) { // fills spaces up to 3 if count < 3
+						for (int k = graph[x][y].length(); k < 3; k++) { // fills spaces if count digits < 3
 							graph[x][y] = " " + graph[x][y];
 						}
 						
