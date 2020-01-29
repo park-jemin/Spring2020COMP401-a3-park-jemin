@@ -191,7 +191,8 @@ public class ConsoleHistogram {
 						break;
 						
 					} else if (stars > 1) {
-						graph[x][y] = (counts[(x-2)/2] == mode) ? "|^|" : "|.|"; // highlight mode (NOT NECESSARY)
+						graph[x][y] = "|^|"; // highlight mode (NOT NECESSARY)
+//						graph[x][y] = (counts[(x-2)/2] == mode) ? "|^|" : "|.|"; // highlight mode (NOT NECESSARY)
 						
 					} else if (stars == 1) {
 						graph[x][y] = "+-+"; 
