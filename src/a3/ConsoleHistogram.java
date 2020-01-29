@@ -219,7 +219,7 @@ public class ConsoleHistogram {
 		graph[(x_axis - 4)/2 - ((counts.length < 2) ? 0 : 1)][y_axis-1] = "  Player Height (in Inches)";
 		
 		return graph;
-	}
+	} 
 	
 	/* printGraph
 	 * Takes a 2d array of any printable type and prints it line by line (across x axis before going down y)
