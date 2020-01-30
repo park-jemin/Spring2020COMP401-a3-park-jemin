@@ -128,7 +128,7 @@ public class ConsoleHistogram {
 	public static int[] scaleCounts (int[] counts, int mode) {
 		int[] countsScaled = new int[counts.length];
 		for (int i = 0; i < countsScaled.length; i++) {
-			countsScaled[i] = counts[i]*30/mode; // scales to fit graph with mode as tallest (automatically rounds down)
+			countsScaled[i] = counts[i]*30/mode; // scales to fit graph around mode (rounds down)
 		}
 		return countsScaled;
 	}
@@ -165,7 +165,11 @@ public class ConsoleHistogram {
 				}
 				
 			} else if (x % 2 == 0) { // 5 spaces at every even
-				for (int y = y_axis - 4, barHeight = countsScaled[(x-2)/2]; y >= 0 && barHeight >= 0; y--, barHeight--) {
+				
+				for (int y = y_axis - 4, barHeight = countsScaled[(x-2)/2]; 
+						y >= 0 && barHeight >= 0; 
+						y--, barHeight--) {
+					
 					if (barHeight > 1) {
 						graph[x][y] = "| ^ |";
 						
@@ -175,8 +179,8 @@ public class ConsoleHistogram {
 					} else if (barHeight == 0) {
 						graph[x][y] = " " + counts[(x-2)/2] + " ";
 						
-						for (int k = graph[x][y].length(); k < 5; k++) { // fills spaces if count digits < 3
-							graph[x][y] = " " + graph[x][y];
+						for (int k = graph[x][y].length(); k < 5; k++) { 
+							graph[x][y] = " " + graph[x][y]; // fills spaces if count digits < 3
 						}
 						
 					}
