@@ -160,12 +160,13 @@ public class ConsoleHistogram {
 		for(int x = 1; x < x_axis; x++) {	
 			
 			if (x % 2 == 1) {
+				
 				for (int y = y_axis - 4; y >= 0; y--) { // fills column
 					graph[x][y] = "   "; // 3 spaces at every odd
 				}
 				
-			} else if (x % 2 == 0) { // 5 spaces at every even
-				
+			} else { // 5 spaces at every even
+
 				for (int y = y_axis - 4, barHeight = countsScaled[(x-2)/2]; 
 						y >= 0 && barHeight >= 0; 
 						y--, barHeight--) {
@@ -177,12 +178,11 @@ public class ConsoleHistogram {
 						graph[x][y] = "+---+"; 
 						
 					} else if (barHeight == 0) {
-						graph[x][y] = " " + counts[(x-2)/2] + " ";
+						graph[x][y] = counts[(x-2)/2] + " ";
 						
 						for (int k = graph[x][y].length(); k < 5; k++) { 
-							graph[x][y] = " " + graph[x][y]; // fills spaces if count digits < 3
+							graph[x][y] = " " + graph[x][y]; // fills spaces if count digits < 4
 						}
-						
 					}
 					
 				}
