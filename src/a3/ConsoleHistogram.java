@@ -65,7 +65,7 @@ public class ConsoleHistogram {
 	 */
 	public static double intListMedian (List<Integer> data) {
 		return (data.size() % 2 == 0) ? 
-			(data.get( (data.size()/2) - 1) + data.get( (data.size()/2)) ) /2 : 
+			(data.get( (data.size()/2) - 1) + data.get( ( data.size()/2) ) )/2 : 
 			data.get( (data.size() - 1) /2);
 	}
 	
@@ -77,24 +77,18 @@ public class ConsoleHistogram {
 	 */
 	public static void makeBins (double[] bins, int numBins, List<Integer> data) {
 		
-		int low = data.get(0), high = data.get(data.size() - 1);
-		double range = high - low;
+		int low = data.get(0); 
+		int high = data.get(data.size() - 1);
+		double range = high - low;		
 		
-		if (range % numBins == (numBins - 1) && numBins > 4) {
-			low--;
-			
-		} else if ((range % numBins == (numBins - 2) ) && numBins > 4) {
-			low--;
-			high++;
-		} 
-		
+		low -= (range % numBins > (numBins - 3) && numBins > 4) ? 1 : 0;
+		high += (range % numBins == (numBins - 2) && numBins > 4) ? 1 : 0;
 		range = high - low;
 
 		Arrays.fill(bins, low);
 		for (int i = 1; i < bins.length; i++) {
 			bins[i] += i * range/(numBins);
 		}
-		
 	}
 	
 	/* fillCounts
@@ -115,7 +109,7 @@ public class ConsoleHistogram {
 				lastSize = data.size();
 				i--;
 				
-			} else if (i == counts.length -1 && memo == data.get(data.size()-1)) {
+			} else if (i == counts.length -1 && memo == data.get(data.size() - 1)) {
 				counts[i] += data.size();			
 			} 
 			
@@ -124,9 +118,8 @@ public class ConsoleHistogram {
 	}
 	
 	/* scaleCounts
-	 * Scales counts appropriately if the highest count in a bin is greater than 30 
-	 * to fit in viewing range of histogram (using the ratio in proportion to mode * 30)
-	 * In other words, scales around a max "count" of 30.
+	 * Scales counts appropriately to set bar heights that fit in viewing range of histogram using the ratio 
+	 * in proportion to mode * 30. In other words, scales around a max "count" of 30.
 	 * 
  	 * Input: int array of counts per bin, the counts in the mode of the data (highest frequency)
 	 * 
@@ -134,15 +127,8 @@ public class ConsoleHistogram {
 	 */
 	public static int[] scaleCounts (int[] counts, int mode) {
 		int[] countsScaled = new int[counts.length];
-		if (mode <= 30) {
-			for (int i = 0; i < counts.length; i++) {
-				countsScaled[i] = counts[i];
-			}
-			
-		} else {
-			for (int i = 0; i < counts.length; i++) {
-				countsScaled[i] = Math.round(counts[i]*30/mode); // scales to fit graph
-			}
+		for (int i = 0; i < countsScaled.length; i++) {
+			countsScaled[i] = counts[i]*30/mode; // scales to fit graph with mode as tallest (automatically rounds down)
 		}
 		return countsScaled;
 	}
@@ -160,48 +146,36 @@ public class ConsoleHistogram {
 		int mode = -1; // establish highest frequency
 		for (int i: counts) {
 			mode = Math.max(i, mode);
-		}		
+		}	
 		
 		int x_axis = bins.length * 2;
-		int y_axis = (mode <= 30) ? mode + 6 : 36; // allocates 6 spaces for titles, marks, spaces, the x axis, and counts
-		int[] countsScaled = scaleCounts(counts, mode);
+		int y_axis = (mode > 30) ? 36 : mode + 6; // allocates 6 spaces for titles, marks, spaces, the x axis, and counts
+		int[] countsScaled = (mode > 30) ? scaleCounts(counts, mode) : counts.clone();
 		
 		String[][] graph = new String[x_axis][y_axis];
-		
 		for (String[] row : graph) {
-			Arrays.fill(row, "   ");
+			Arrays.fill(row, "     ");
 		}
 		
 		for(int x = 1; x < x_axis; x++) {	
 			
 			if (x % 2 == 1) {
-				graph[x][y_axis - 2] = String.format("%.2f", bins[(x-1)/2]); // 5 spaces at every odd
-				graph[x][y_axis - 3] = "_____";
-				
 				for (int y = y_axis - 4; y >= 0; y--) { // fills column
-					graph[x][y] = "     ";
+					graph[x][y] = "   "; // 3 spaces at every odd
 				}
 				
-			} else if (x % 2 == 0) { // 3 spaces at every even
-				
-				graph[x][y_axis - 2] = " - "; 
-				graph[x][y_axis - 3] = "___";
-				
-				for (int y = y_axis - 4, stars = countsScaled[(x-2)/2]; y >= 0; y--, stars--) {
-					if (stars < 0) {
-						break;
+			} else if (x % 2 == 0) { // 5 spaces at every even
+				for (int y = y_axis - 4, barHeight = countsScaled[(x-2)/2]; y >= 0 && barHeight >= 0; y--, barHeight--) {
+					if (barHeight > 1) {
+						graph[x][y] = "| ^ |";
 						
-					} else if (stars > 1) {
-						graph[x][y] = "|^|";
+					} else if (barHeight == 1) {
+						graph[x][y] = "+---+"; 
 						
-					} else if (stars == 1) {
-						graph[x][y] = "+-+"; 
+					} else if (barHeight == 0) {
+						graph[x][y] = " " + counts[(x-2)/2] + " ";
 						
-					} else if (stars == 0) {
-						
-						graph[x][y] = "" + counts[(x-2)/2];
-						
-						for (int k = graph[x][y].length(); k < 3; k++) { // fills spaces if count digits < 3
+						for (int k = graph[x][y].length(); k < 5; k++) { // fills spaces if count digits < 3
 							graph[x][y] = " " + graph[x][y];
 						}
 						
@@ -211,6 +185,8 @@ public class ConsoleHistogram {
 				
 			}	
 			
+			graph[x][y_axis - 3] = "____" + ((x == x_axis - 1) ? "_" : "" ); 
+			graph[x][y_axis - 2] = (x % 2 != 0) ? String.format("%.2f", bins[(x-1)/2]) : " - ";
 			graph[x][y_axis - 1] = "    "; // 4 spaces for all bottom row to align x_axis label
 
 		}
