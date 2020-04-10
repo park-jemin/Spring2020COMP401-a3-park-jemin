@@ -52,7 +52,7 @@ public class ConsoleHistogram {
 	/* intListMean
 	 * Calculates the mean from a list of integers
 	 */
-	public static double intListMean (List<Integer> data) {
+	private static double intListMean (List<Integer> data) {
 		double sum = 0;
 		for (Integer i : data) {
 			sum += i;
@@ -63,9 +63,9 @@ public class ConsoleHistogram {
 	/* intListMedian
 	 * Finds the median from a sorted list of integers
 	 */
-	public static double intListMedian (List<Integer> data) {
+	private static double intListMedian (List<Integer> data) {
 		return (data.size() % 2 == 0) ? 
-			(data.get( (data.size()/2) - 1) + data.get( ( data.size()/2) ) )/2 : 
+				(data.get( (data.size()/2) - 1) + data.get( ( data.size()/2) ) )/2 : 
 			data.get( (data.size() - 1) /2);
 	}
 	
@@ -75,7 +75,7 @@ public class ConsoleHistogram {
 	 * Decrements and increments low and high of the bin range to give cleaner rounding for steps  
 	 * if possible
 	 */
-	public static void makeBins (double[] bins, int numBins, List<Integer> data) {
+	private static void makeBins (double[] bins, int numBins, List<Integer> data) {
 		
 		int low = data.get(0); 
 		int high = data.get(data.size() - 1);
@@ -86,16 +86,15 @@ public class ConsoleHistogram {
 		range = high - low;
 
 		Arrays.fill(bins, low);
-		for (int i = 1; i < bins.length; i++) {
+		for (int i = 1; i < bins.length; i++)
 			bins[i] += i * range/(numBins);
-		}
 	}
 	
 	/* fillCounts
 	 * Fills an int array holding counts with appropriate count corresponding to each bin from a sorted
 	 * data list of integers  
 	 */
-	public static void fillCounts (int[] counts, double[] bins, List<Integer> data) {
+	private static void fillCounts (int[] counts, double[] bins, List<Integer> data) {
 		
 		int memo, lastSize = data.size();
 		
@@ -109,9 +108,8 @@ public class ConsoleHistogram {
 				lastSize = data.size();
 				i--;
 				
-			} else if (i == counts.length -1 && memo == data.get(data.size() - 1)) {
+			} else if (i == counts.length -1 && memo == data.get(data.size() - 1))
 				counts[i] += data.size();			
-			} 
 			
 		}
 		
@@ -125,11 +123,11 @@ public class ConsoleHistogram {
 	 * 
 	 * Output: int array of the counts after scaling
 	 */
-	public static int[] scaleCounts (int[] counts, int mode) {
+	private static int[] scaleCounts (int[] counts, int mode) {
 		int[] countsScaled = new int[counts.length];
-		for (int i = 0; i < countsScaled.length; i++) {
+		for (int i = 0; i < countsScaled.length; i++)
 			countsScaled[i] = counts[i]*30/mode; // scales to fit graph around mode (rounds down)
-		}
+		
 		return countsScaled;
 	}
 
@@ -141,7 +139,7 @@ public class ConsoleHistogram {
 	 * Output: a 2D string array containing ASCII "image" of the histogram, showing the bin ranges, 
 	 * x axis and titles, along with the actual counts within each bin
 	 */
-	public static String[][] makeStringHistogram (double[] bins, int[] counts) {
+	private static String[][] makeStringHistogram (double[] bins, int[] counts) {
 		
 		int mode = -1; // establish highest frequency
 		for (int i: counts) {
@@ -160,29 +158,24 @@ public class ConsoleHistogram {
 		for(int x = 1; x < x_axis; x++) {	
 			
 			if (x % 2 == 1) {
-				
-				for (int y = y_axis - 4; y >= 0; y--) { // fills column
+				for (int y = y_axis - 4; y >= 0; y--) // fills column
 					graph[x][y] = "   "; // 3 spaces at every odd
-				}
 				
 			} else { // 5 spaces at every even
-
 				for (int y = y_axis - 4, barHeight = countsScaled[(x-2)/2]; 
-						y >= 0 && barHeight >= 0; 
-						y--, barHeight--) {
+						y >= 0 && barHeight >= 0; y--, barHeight--) {
 					
-					if (barHeight > 1) {
+					if (barHeight > 1)
 						graph[x][y] = "| ^ |";
 						
-					} else if (barHeight == 1) {
+					else if (barHeight == 1)
 						graph[x][y] = "+---+"; 
 						
-					} else if (barHeight == 0) {
+					else if (barHeight == 0) {
 						graph[x][y] = counts[(x-2)/2] + " ";
 						
-						for (int k = graph[x][y].length(); k < 5; k++) { 
+						for (int k = graph[x][y].length(); k < 5; k++)
 							graph[x][y] = " " + graph[x][y]; // fills spaces if count digits < 4
-						}
 					}
 					
 				}
@@ -204,11 +197,11 @@ public class ConsoleHistogram {
 	/* printGraph
 	 * Takes a 2d array of any printable type and prints it line by line (across x axis before going down y)
 	 */
-	public static <T> void printGraph (T[][] graph) {
+	private static <T> void printGraph (T[][] graph) {
 		for (int y = 0; y < graph[0].length; y++) {
-			for (int x = 0; x < graph.length; x++) { // print x's on one line before going down a line per y
+			for (int x = 0; x < graph.length; x++) // print x's on one line before going down a line per y
 				System.out.print(graph[x][y]);
-			}
+			
 			System.out.println();
 		}
 	}
